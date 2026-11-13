@@ -1,0 +1,8 @@
+# Default owner for everything
+*       @fstevanus
+
+# Security-sensitive areas require maintainer review
+/lib/scanner.js   @fstevanus
+/server.js        @fstevanus
+/public/app.js    @fstevanus
+/Dockerfile       @fstevanus
