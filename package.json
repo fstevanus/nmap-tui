@@ -1,0 +1,18 @@
+{
+  "name": "nmap-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Nmap web UI - full-featured nmap frontend running in a container with host networking",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^5.2.0",
+    "ws": "^8.18.0"
+  }
+}

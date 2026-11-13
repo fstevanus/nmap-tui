@@ -1,0 +1,39 @@
+# Compose variant for ROOTLESS Podman / macOS / Windows — the default choice
+# on macOS (Podman machine or Docker Desktop): containers run inside a Linux
+# VM or an unprivileged netns, so `network_mode: host` would give the VM's
+# network, not your LAN.
+#
+# Rootless/VM containers cannot open raw sockets in the *host* network
+# namespace, so host networking alone won't allow SYN scans. Instead we use
+# the default rootless/user-mode network (slirp4netns/passt) and grant
+# NET_RAW/NET_ADMIN inside the container's own network namespace — SYN scans
+# against the LAN work fine. Trade-off: no ARP/MAC discovery (L2 isn't
+# bridged), and "the host itself" must be addressed by its LAN IP (or
+# host.containers.internal), not 127.0.0.1.
+#
+#   podman compose -f docker-compose.rootless.yml up -d --build
+#
+# If you can run rootful podman/docker on the host, prefer the main
+# docker-compose.yml with host networking — that gives the full nmap
+# experience (ARP, MAC vendors, link-layer discovery).
+services:
+  nmap-web:
+    build: .
+    container_name: nmap-web
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    ports:
+      - "127.0.0.1:8787:8787"
+    volumes:
+      - nmap-data:/data
+    environment:
+      NMAP_UI_HOST: "0.0.0.0"
+      NMAP_UI_PORT: "8787"
+      # NMAP_UI_TOKEN: "change-me"
+      NMAP_UI_CONCURRENCY: "2"
+      NMAP_UI_HISTORY: "200"
+    restart: unless-stopped
+
+volumes:
+  nmap-data:

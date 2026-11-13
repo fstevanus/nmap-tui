@@ -1,0 +1,25 @@
+# Main variant: host networking + root — for LINUX hosts with a rootful
+# Docker/Podman engine. On macOS/Windows (Docker Desktop / Podman machine)
+# containers run inside a VM, so `network_mode: host` gives the VM's network
+# and does NOT reach your LAN — use docker-compose.rootless.yml there instead.
+services:
+  nmap-web:
+    build: .
+    container_name: nmap-web
+    # Host networking: the container shares the host's network stack so nmap
+    # scans the host's LAN exactly as if it ran on the host itself.
+    network_mode: host
+    volumes:
+      - nmap-data:/data
+    environment:
+      # Bind to localhost only — this is a local web UI. Set to 0.0.0.0 with
+      # NMAP_UI_TOKEN to expose it beyond the machine (not recommended).
+      NMAP_UI_HOST: "127.0.0.1"
+      NMAP_UI_PORT: "8787"
+      # NMAP_UI_TOKEN: "change-me"
+      NMAP_UI_CONCURRENCY: "2"
+      NMAP_UI_HISTORY: "200"
+    restart: unless-stopped
+
+volumes:
+  nmap-data:
