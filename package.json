@@ -1,15 +1,37 @@
 {
   "name": "nmap-web",
   "version": "1.0.0",
-  "private": true,
-  "description": "Nmap web UI - full-featured nmap frontend running in a container with host networking",
+  "description": "Full-featured nmap web UI — run scans from your browser, with live progress, parsed results and history. Containerized with Docker/Podman.",
   "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "nmap",
+    "network-scanner",
+    "port-scanner",
+    "security",
+    "web-ui",
+    "zenmap",
+    "docker",
+    "podman",
+    "recon"
+  ],
   "engines": {
     "node": ">=20"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/nmap-web.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/nmap-web/issues"
+  },
+  "homepage": "https://github.com/your-username/nmap-web#readme",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "test": "node --test test/unit/ && node test/frontend-harness.cjs",
+    "test:unit": "node --test test/unit/",
+    "test:frontend": "node test/frontend-harness.cjs"
   },
   "dependencies": {
     "fast-xml-parser": "^5.2.0",
