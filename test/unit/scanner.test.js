@@ -72,6 +72,7 @@ test('successful scan via fake nmap: parses XML, streams progress, emits done', 
   scanner.enqueue(record);
 
   await waitFor(() => record.status === 'done');
+  await new Promise((r) => setTimeout(r, 100));
   assert.equal(record.result.summary.openPorts, 1);
   assert.equal(record.result.summary.closedPorts, 99); // extraports counted
   assert.ok(record.command.includes('nmap'));
