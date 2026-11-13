@@ -64,12 +64,17 @@ jobs:
         run: |
           docker run -d --name nmap-web-ci -p 8787:8787 \
             -e NMAP_UI_HOST=0.0.0.0 nmap-web:ci
-          for i in $(seq 1 30); do
+          for i in $(seq 1 45); do
             if curl -sf http://localhost:8787/api/health >/dev/null; then
               echo "health OK: $(curl -s http://localhost:8787/api/health)"
-              break
+              docker rm -f nmap-web-ci
+              exit 0
             fi
             sleep 1
           done
-          curl -sf http://localhost:8787/api/health
+          echo "=== container logs ==="
+          docker logs nmap-web-ci
+          echo "=== container status ==="
+          docker inspect nmap-web-ci --format '{{.State.Status}} exit={{.State.ExitCode}}'
           docker rm -f nmap-web-ci
+          exit 1
