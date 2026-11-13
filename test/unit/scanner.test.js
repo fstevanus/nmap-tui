@@ -21,13 +21,16 @@ const FAKE_XML = `<?xml version="1.0"?>
 /** Write a fake nmap binary: prints a stats line to stderr, XML to stdout. */
 async function makeFakeNmap(dir) {
   const p = path.join(dir, 'fake-nmap');
-  await fsp.writeFile(p, `#!/bin/sh
-sleep 0.2
-echo "SYN Stealth Scan Timing: About 50.00% done; ETC: --:--" >&2
-cat <<'EOF'
-${FAKE_XML}
-EOF
-exit 0
+  await fsp.writeFile(p, `#!/usr/bin/env node
+const xml = ${JSON.stringify(FAKE_XML)};
+setTimeout(() => {
+  process.stderr.write('SYN Stealth Scan Timing: About 50.00% done; ETC: --:--\\n');
+}, 50);
+setTimeout(() => {
+  process.stdout.write(xml, () => {
+    process.exit(0);
+  });
+}, 200);
 `);
   await fsp.chmod(p, 0o755);
   return p;
@@ -105,8 +108,9 @@ test('cancelling a queued scan marks it cancelled without starting it', async ()
   const dir = await fsp.mkdtemp(path.join(os.tmpdir(), 'nmapweb-fake-'));
   // A slow fake nmap so the concurrency slot stays occupied long enough.
   const p = path.join(dir, 'slow-nmap');
-  await fsp.writeFile(p, `#!/bin/sh
-sleep 30
+  await fsp.writeFile(p, `#!/usr/bin/env node
+process.on('SIGINT', () => process.exit(130));
+setInterval(() => {}, 1000);
 `);
   await fsp.chmod(p, 0o755);
 
@@ -136,9 +140,10 @@ test('cancelling a running scan (fake nmap) ends it via SIGINT', async () => {
   const dir = await fsp.mkdtemp(path.join(os.tmpdir(), 'nmapweb-fake-'));
   // A slow fake nmap that traps SIGINT like the real one
   const p = path.join(dir, 'slow-nmap');
-  await fsp.writeFile(p, `#!/bin/sh
-echo "About 10.00% done" >&2
-exec sleep 60
+  await fsp.writeFile(p, `#!/usr/bin/env node
+process.stderr.write('About 10.00% done\\n');
+process.on('SIGINT', () => process.exit(130));
+setInterval(() => {}, 1000);
 `);
   await fsp.chmod(p, 0o755);
 
