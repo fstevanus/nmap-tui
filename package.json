@@ -30,7 +30,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "test": "node --test test/unit/ && node test/frontend-harness.cjs",
-    "test:unit": "node --test test/unit/",
+    "test:unit": "node --test --test-timeout=60000 test/unit/args.test.js test/unit/parse.test.js test/unit/store.test.js test/unit/scanner.test.js test/unit/server.test.js",
     "test:frontend": "node test/frontend-harness.cjs"
   },
   "dependencies": {
