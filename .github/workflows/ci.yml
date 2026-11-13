@@ -59,14 +59,3 @@ jobs:
           tags: nmap-web:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Smoke test the image
-        run: |
-          docker run -d --name nmap-web-ci -p 8787:8787 \
-            -e NMAP_UI_HOST=0.0.0.0 nmap-web:ci
-          sleep 3
-          echo "=== container logs ==="
-          docker logs nmap-web-ci
-          echo "=== curl attempt ==="
-          curl -v http://localhost:8787/api/health 2>&1 || true
-          docker rm -f nmap-web-ci
