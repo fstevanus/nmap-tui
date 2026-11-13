@@ -7,6 +7,9 @@ scoped setup (containers run in a VM there — see [Quick start](#quick-start)).
 Beautiful dark UI, live scan progress, parsed results, scan history.
 
 ![license](https://img.shields.io/badge/license-MIT-blue)
+![CI](https://github.com/fstevanus/nmap-tui/actions/workflows/ci.yml/badge.svg)
+![Node](https://img.shields.io/badge/node-%3E%3D20-339933)
+![Docker](https://img.shields.io/badge/docker-ghcr.io%2Ffstevanus%2Fnmap--tui-blue)
 
 ## Features
 
