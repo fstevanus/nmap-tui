@@ -1,6 +1,6 @@
 {
   "name": "nmap-web",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Full-featured nmap web UI — run scans from your browser, with live progress, parsed results and history. Containerized with Docker/Podman.",
   "type": "module",
   "license": "MIT",
