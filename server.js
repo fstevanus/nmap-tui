@@ -231,7 +231,8 @@ const server = http.createServer(async (req, res) => {
       const rec = await findRecord(scansMatch[1]);
       if (!rec) return sendJson(res, 404, { error: 'Scan not found' });
       if (scanner.isActive(rec.id)) {
-        await scanner.cancel(rec.id);
+        const cancelled = await scanner.cancel(rec.id);
+        if (!cancelled) return sendJson(res, 409, { error: 'Scan already finished' });
         return sendJson(res, 200, { id: rec.id, status: 'cancelling' });
       }
       await store.delete(rec.id);
@@ -243,7 +244,8 @@ const server = http.createServer(async (req, res) => {
       const rec = await findRecord(cancelMatch[1]);
       if (!rec) return sendJson(res, 404, { error: 'Scan not found' });
       if (!scanner.isActive(rec.id)) return sendJson(res, 409, { error: 'Scan is not active' });
-      await scanner.cancel(rec.id);
+      const cancelled = await scanner.cancel(rec.id);
+      if (!cancelled) return sendJson(res, 409, { error: 'Scan already finished' });
       return sendJson(res, 200, { id: rec.id, status: 'cancelling' });
     }
 
