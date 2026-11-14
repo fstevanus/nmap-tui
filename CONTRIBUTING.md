@@ -55,3 +55,30 @@ binary. To exercise the real pipeline, run in Podman/Docker (see README).
 
 Please do not open public issues for vulnerabilities. Email the maintainer
 instead (see `package.json` author field).
+
+## Docker Hub publishing (maintainers)
+
+Images are published to Docker Hub (`<username>/nmap-web`) and GHCR on every
+push to `main`/`master` (tagged `latest`) and on every `v*` tag (semver tags).
+
+Required GitHub repository secrets (Settings → Secrets and variables → Actions):
+
+- `DOCKERHUB_USERNAME` — your Docker Hub username
+- `DOCKERHUB_TOKEN` — a Docker Hub access token (not your password)
+
+Create a token at https://hub.docker.com/settings/security with
+**Read & Write** scope. Rotate it periodically.
+
+### Semantic versioning
+
+Tag releases with `vX.Y.Z` (e.g. `v1.2.3`):
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+This produces tags: `1.0.0`, `1.0`, `latest` on both registries, plus a
+GitHub release with auto-generated notes.
+
+For pre-releases, use `v1.0.0-rc.1` etc.
