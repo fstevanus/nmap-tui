@@ -9,7 +9,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { execFile } from 'node:child_process';
 import { WebSocketServer } from 'ws';
-import { PRESETS } from './lib/args.js';
+import { PRESETS, parseTargets } from './lib/args.js';
 import { ScanManager } from './lib/scanner.js';
 import { Store } from './lib/store.js';
 
@@ -186,6 +186,15 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === '/api/scan' && req.method === 'POST') {
       const body = JSON.parse(await readBody(req) || '{}');
       if (typeof body.targets !== 'string' || !body.targets.trim()) {
+        return sendJson(res, 400, { error: 'Targets are required.' });
+      }
+      let targets;
+      try {
+        targets = parseTargets(body.targets);
+      } catch (err) {
+        return sendJson(res, 400, { error: err.message });
+      }
+      if (targets.length === 0) {
         return sendJson(res, 400, { error: 'Targets are required.' });
       }
       const id = crypto.randomBytes(6).toString('hex');
