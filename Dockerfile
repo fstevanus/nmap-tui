@@ -1,13 +1,10 @@
 # nmap-web container image
 # Runs as root so nmap can use raw sockets (SYN scan, OS detection, etc.).
-# Networking is chosen at runtime: --network host on Linux (full nmap
-# experience), or port mapping + NET_RAW/NET_ADMIN caps on macOS/Windows/
-# rootless (see README).
-FROM node:22-bookworm-slim
+# Alpine base keeps the image small; nmap-scripts/nselibs provide NSE scripts.
+FROM node:22-alpine
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends nmap ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+# nmap + NSE scripts + ncat/nping. --no-cache keeps apk lists out of the image.
+RUN apk add --no-cache nmap nmap-scripts nmap-nselibs nmap-ncat nmap-nping ca-certificates
 
 WORKDIR /app
 
@@ -28,7 +25,7 @@ ENV NODE_ENV=production \
 VOLUME /data
 EXPOSE 8787
 
-# Health check via the API (no curl in this image, use node's fetch).
+# Health check via the API (node is available; no curl in alpine by default).
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
   CMD ["node", "-e", "fetch('http://127.0.0.1:'+(process.env.NMAP_UI_PORT||8787)+'/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
 
