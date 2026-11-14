@@ -7,6 +7,8 @@ scoped setup (containers run in a VM there — see [Quick start](#quick-start)).
 Beautiful dark UI, live scan progress, parsed results, scan history.
 
 ![license](https://img.shields.io/badge/license-MIT-blue)
+![Docker Pulls](https://img.shields.io/docker/pulls/fstevanus/nmap-web)
+![Docker Image Size](https://img.shields.io/docker/image-size/fstevanus/nmap-web/latest)
 ![CI](https://github.com/fstevanus/nmap-tui/actions/workflows/ci.yml/badge.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D20-339933)
 ![Docker](https://img.shields.io/badge/docker-ghcr.io%2Ffstevanus%2Fnmap--tui-blue)
@@ -40,6 +42,22 @@ Beautiful dark UI, live scan progress, parsed results, scan history.
 > **VM's** network, *not* your Mac's LAN, and VM ports aren't auto-forwarded.
 > Use the **port-mapped variant** there. On a **Linux** host with a rootful
 > engine, use **host networking** for the full nmap experience.
+
+### Docker Hub (pre-built image)
+
+Skip the build entirely:
+
+```bash
+docker pull fstevanus/nmap-web:latest
+docker run -d --name nmap-web \
+  -p 127.0.0.1:8787:8787 \
+  --cap-add NET_RAW --cap-add NET_ADMIN \
+  -e NMAP_UI_HOST=0.0.0.0 \
+  -v nmap-web-data:/data \
+  fstevanus/nmap-web:latest
+```
+
+Pin a specific version with \`fstevanus/nmap-web:1.0.0\`.
 
 ### macOS / Windows / rootless Podman — port-mapped + capabilities
 
