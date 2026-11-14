@@ -4,6 +4,7 @@ on:
   push:
     branches: [main, master]
     tags: ['v*']
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -12,7 +13,7 @@ permissions:
 jobs:
   publish:
     name: Build & push to Docker Hub
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v4
